@@ -60,25 +60,43 @@ def initialise():
     LABEL = [1, 0, 1, 0, 0, 1, 0, 1]
     # combined the three seperate lists into one list and return
     dataset = list(zip(WEIGHTS, LENGTH, LABEL))
+
     return dataset
+
+
+def print_parameters(w1, w2, b):
+    print(str(w1).ljust(20),str(w2).ljust(20),str(b).ljust(20))
 
 
 def main():
     dataset = initialise()
-    learningRate = 0.1
+    # initialise the learning rate constant
+    learning_rate = 0.1
+    # randomly assign weights
     b = numpy.random.rand()
     w1 = numpy.random.rand()
     w2 = numpy.random.rand()
 
+    print("W1".ljust(20), "W2".ljust(20),"bias".ljust(20))
+
+    print_parameters(w1,w2,b)
     for weight, length, true_ouput in dataset:
-        result = single_layer_perceptron(weight, w1, length, w2, b)
-        result = threshold(result)
-        error = get_error(true_ouput, result)
+        # get the result form single perceptron
+        predicted_output = single_layer_perceptron(weight, w1, length, w2, b)
+        # get the output as Either 0 or 1
+        predicted_output = threshold(predicted_output)
+        # get the error wrt the expected output
+        error = get_error(true_ouput, predicted_output)
+        # if the error is not 0 then backpropogate the error to adjust the
+        # weights
         if error != 0:
-            w1 += learningRate * error * weight
-            w2 += learningRate * error * length
-            b += learningRate * error * 1
-        print(true_ouput, result)
+            #this is the code where actual back propogation takes place and
+            # the weights gets upadted
+            w1 += learning_rate * error * weight
+            w2 += learning_rate * error * length
+            b += learning_rate * error * 1
+        #print(true_ouput, predicted_output)
+        print_parameters(w1, w2, b)
 
 
 if __name__ == '__main__':
