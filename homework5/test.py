@@ -31,26 +31,32 @@ def neighbors_of(row,col):
 
 Reward = numpy.zeros((NUMBER_OF_ROWS,NUMBER_OF_COLS))
 
+
 def value(row,col):
     if (row,col) in exploring:
-        return world[row,col]
+        return Reward[row,col]
     if Reward[row,col] != 0:
         return Reward[row, col]
     exploring.append((row,col))
+    print(row, col)
     neighbors = neighbors_of(row,col)
     result = []
     for neighbor in neighbors:
         result.append(value(neighbor[0],neighbor[1]))
     exploring.remove((row,col))
+
     if len(result) > 0:
+        Reward[row,col] = Reward[row,col]+ 0.9 * numpy.max(result)
         return world[row,col] + 0.9 * numpy.max(result)
     return world[row,col]
 
-
-exploring = []
-print(value(9,8))
-exploring = []
-print(value(0,1))
+# if __name__ == '__main__':
+#
+#
+#     exploring = []
+#     print(value(3,2))
+#     exploring = []
+#print(value(0,1))
 
 
 
