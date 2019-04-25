@@ -180,7 +180,7 @@ if __name__ == '__main__':
     theta1 , theta2, bias = get_learned_parameters(something)
     # 2. 10 × 10 world with a single +1 terminal state at (10,10). calculating values using least
     #  square linear approximation
-    print("a. 10 × 10 world with a single +1 terminal state at (10,10).")
+    print("a. 10 × 10 world with a single +1 terminal state at (10,10) using linear approximation")
     something = CalculateUtility()
     # set rewards states
     something.Reward[10, 10] = 1
@@ -200,6 +200,21 @@ if __name__ == '__main__':
     run_trials(something)
     pretty_print(something.Reward)
 
+    # ==============================================================================================
+    # initialise the learning rate constant
+
+    # b. As in (a), but add a −1 terminal state at (10,1).
+    print("b. As in (a), but add a −1 terminal state at (10,1) using linear approximation")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.Reward[10, 1] = -1
+    something.terminal_states.append((10, 10))
+    something.terminal_states.append((10, 1))
+    caculate_reward_using_learned_parameter(theta1, theta2, bias, something)
+    pretty_print(something.Reward)
+
+
     # c. As in (b), but add obstacles in 10 randomly selected squares
     print("c. As in (b), but add obstacles in 10 randomly selected squares")
     print("Value showing 0 is the obstacles")
@@ -212,6 +227,24 @@ if __name__ == '__main__':
     set_obstacles_in_random_places(something)
     run_trials(something)
     pretty_print(something.Reward)
+
+    # ==============================================================================================
+    # initialise the learning rate constant
+
+    # c. As in (b), but add obstacles in 10 randomly selected squares
+    print("c. As in (b), but add obstacles in 10 randomly selected squares using linear square "
+          "approximation")
+    print("Value showing 0 is the obstacles")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.Reward[10, 1] = -1
+    something.terminal_states.append((10, 10))
+    something.terminal_states.append((10, 1))
+    set_obstacles_in_random_places(something)
+    caculate_reward_using_learned_parameter(theta1, theta2, bias, something)
+    pretty_print(something.Reward)
+
 
     # d.As in (b), but place a wall stretching from (5,2) to (5,9).
     print("d.As in (b), but place a wall stretching from (5,2) to (5,9).")
@@ -226,6 +259,22 @@ if __name__ == '__main__':
     run_trials(something)
     pretty_print(something.Reward)
 
+    # ==============================================================================================
+    # initialise the learning rate constant
+
+    # d.As in (b), but place a wall stretching from (5,2) to (5,9).
+    print("d.As in (b), but place a wall stretching from (5,2) to (5,9)  using linear square ")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.Reward[10, 1] = -1
+    something.terminal_states.append((10, 10))
+    something.terminal_states.append((10, 1))
+    for _ in range(2, 10):
+        something.terminal_states.append((5, _))
+    caculate_reward_using_learned_parameter(theta1, theta2, bias, something)
+    pretty_print(something.Reward)
+
     #e. As in (a), but with the terminal state at (5,5).
 
     print("e. As in (a), but with the terminal state at (5,5).")
@@ -235,6 +284,18 @@ if __name__ == '__main__':
     something.Reward[5, 5] = 1
     something.terminal_states.append((10, 10))
     run_trials(something)
+    pretty_print(something.Reward)
+
+    # ==============================================================================================
+    # initialise the learning rate constant
+
+    print("e. As in (a), but with the terminal state at (5,5)  using linear square ")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.Reward[5, 5] = 1
+    something.terminal_states.append((10, 10))
+    caculate_reward_using_learned_parameter(theta1, theta2, bias, something)
     pretty_print(something.Reward)
 
 
