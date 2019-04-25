@@ -11,6 +11,8 @@ of each grid instead of actually calculating
 
 import numpy
 import random
+import matplotlib.pyplot as plt
+
 
 class CalculateUtility:
     __slots__ = 'NUMBER_OF_ROWS','NUMBER_OF_COLS','exploring','world','Reward','alpha', \
@@ -76,6 +78,11 @@ class CalculateUtility:
 
 
 def pretty_print(array):
+    """
+    helper funcytion to print the reward matrix nicely
+    :param array:
+    :return:
+    """
     print("========================== print the 10 * 10 matrix ==========================")
     print()
     for row in range(1,11):
@@ -85,7 +92,13 @@ def pretty_print(array):
     print()
     print()
 
+
 def run_trials(something):
+    """
+    Helper function to run the required trials to calculate the reward for every grid
+    :param something:
+    :return:
+    """
     for row in range(1,something.NUMBER_OF_ROWS):
         for col in range(1,something.NUMBER_OF_COLS):
             if (row, col) in something.terminal_states:
@@ -95,6 +108,11 @@ def run_trials(something):
 
 
 def set_obstacles_in_random_places(something):
+    """
+    Helper function to randomly set the obstacles in the grid
+    :param something:
+    :return:
+    """
     obstacles_to_add = 10
     while obstacles_to_add > 0:
         x = random.randint(1,10)
@@ -130,6 +148,12 @@ def get_error( predicted_value,true_value):
 
 
 def get_learned_parameters(something):
+    """
+    Trains the required parameters based on the known values,
+    uses 16 values to train the values
+    :param something:
+    :return:
+    """
     learning_rate = 0.1
     # randomly assign weights
     bias = numpy.random.rand()
@@ -150,12 +174,18 @@ def get_learned_parameters(something):
                 theta1 += learning_rate * error * x
                 theta2 += learning_rate * error * y
                 bias += learning_rate * error * 1
-
-
     return theta1, theta2, bias
 
 
 def caculate_reward_using_learned_parameter(theta1, theta2, bias, something):
+    """
+    Helper functions to calculate the reward for every grid based on ;linear approximation
+    :param theta1:
+    :param theta2:
+    :param bias:
+    :param something:
+    :return:
+    """
     for row in range(1,something.NUMBER_OF_ROWS):
         for col in range(1,something.NUMBER_OF_COLS):
             if (row, col) in something.terminal_states:
@@ -165,6 +195,7 @@ def caculate_reward_using_learned_parameter(theta1, theta2, bias, something):
 
 
 if __name__ == '__main__':
+
     # a. 10 × 10 world with a single +1 terminal state at (10,10).
     print("a. 10 × 10 world with a single +1 terminal state at (10,10).")
     something = CalculateUtility()
@@ -173,6 +204,7 @@ if __name__ == '__main__':
     something.terminal_states.append((10,10))
     run_trials(something)
     pretty_print(something.Reward)
+
 
     # ==============================================================================================
     # initialise the learning rate constant
@@ -245,7 +277,6 @@ if __name__ == '__main__':
     caculate_reward_using_learned_parameter(theta1, theta2, bias, something)
     pretty_print(something.Reward)
 
-
     # d.As in (b), but place a wall stretching from (5,2) to (5,9).
     print("d.As in (b), but place a wall stretching from (5,2) to (5,9).")
     something = CalculateUtility()
@@ -258,6 +289,8 @@ if __name__ == '__main__':
         something.terminal_states.append((5,_))
     run_trials(something)
     pretty_print(something.Reward)
+    # plt.imshow(something.Reward, cmap='hot', interpolation='nearest')
+    # plt.show()
 
     # ==============================================================================================
     # initialise the learning rate constant
@@ -274,6 +307,10 @@ if __name__ == '__main__':
         something.terminal_states.append((5, _))
     caculate_reward_using_learned_parameter(theta1, theta2, bias, something)
     pretty_print(something.Reward)
+    # plt.imshow(something.Reward, cmap='hot', interpolation='nearest')
+    # plt.show()
+
+
 
     #e. As in (a), but with the terminal state at (5,5).
 
