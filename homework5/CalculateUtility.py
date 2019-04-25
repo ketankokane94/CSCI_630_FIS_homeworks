@@ -17,8 +17,8 @@ class CalculateUtility:
                 'terminal_states'
 
     def __init__(self):
-        self.NUMBER_OF_ROWS = 10
-        self.NUMBER_OF_COLS = 10
+        self.NUMBER_OF_ROWS = 11
+        self.NUMBER_OF_COLS = 11
         self.Reward = numpy.zeros((self.NUMBER_OF_ROWS, self.NUMBER_OF_COLS))
         self.exploring = []
         self.alpha = 0.9
@@ -39,10 +39,10 @@ class CalculateUtility:
         if col + 1 < self.NUMBER_OF_COLS:
             result.append((row, col + 1))
         # for left action
-        if col - 1 >= 0:
+        if col - 1 >= 1:
             result.append((row, col - 1))
         # for up action
-        if row - 1 >= 0:
+        if row - 1 >= 1:
             result.append((row-1,col))
         # for down action
         if row + 1 < self.NUMBER_OF_ROWS:
@@ -73,15 +73,25 @@ class CalculateUtility:
             self.Reward[x,y] = self.Reward[x, y] + self.alpha * numpy.max(result)
         return self.Reward[x,y]
 
+
+def pretty_print(array):
+    print("========================== print the 10 * 10 matrix ==========================")
+    print()
+    for row in range(1,11):
+        for col in range(1,11):
+            print(str(round(array[row,col],3)).ljust(5),end='\t')
+        print()
+
+
 if __name__ == '__main__':
     # A
     something = CalculateUtility()
     # set rewards states
-    something.Reward[9,9] = 1
-    something.terminal_states.append((9,9))
-    for row in range(something.NUMBER_OF_ROWS):
-        for col in range(something.NUMBER_OF_COLS):
+    something.Reward[10,10] = 1
+    something.terminal_states.append((10,10))
+    for row in range(1,something.NUMBER_OF_ROWS):
+        for col in range(1,something.NUMBER_OF_COLS):
             something.exploring = []
             something.Reward[row, col] = something.get_reward(row, col)
-    print(something.Reward)
+    pretty_print(something.Reward)
 
