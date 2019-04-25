@@ -105,6 +105,63 @@ def set_obstacles_in_random_places(something):
         obstacles_to_add -= 1
 
 
+def single_layer_perceptron(x, theta1, y, theta2, bias):
+        '''
+        Calculates the output of the single perceptron by summing up the inputs
+        with its associated weights and add the bias
+        :param x: input one
+        :param theta1: weight associated with input one
+        :param y: input two
+        :param theta2: weight associcated with input two
+        :param bias: bias
+        :return: returns the calculated output
+        '''
+        value = x * theta1 + y * theta2 + bias
+        return value
+
+def get_error( predicted_value,true_value):
+        '''
+        returns the squared error
+        :param true_value:
+        :param predicted_value:
+        :return:
+        '''
+        return predicted_value - true_value
+
+
+def get_learned_parameters(something):
+    learning_rate = 0.1
+    # randomly assign weights
+    bias = numpy.random.rand()
+    theta1 = numpy.random.rand()
+    theta2 = numpy.random.rand()
+
+    for x in range(4):
+        for y in range(4):
+            # get the result form single perceptron
+            predicted_output = single_layer_perceptron(x, theta1, y, theta2, bias)
+            # get the error wrt the expected output
+            error = get_error(something.Reward[x, y], predicted_output)
+            # if the error is not 0 then backpropogate the error to adjust the
+            # weights
+            if error != 0:
+                # this is the code where actual back propogation takes place and
+                # the weights gets upadted
+                theta1 += learning_rate * error * x
+                theta2 += learning_rate * error * y
+                bias += learning_rate * error * 1
+
+
+    return theta1, theta2, bias
+
+
+def caculate_reward_using_learned_parameter(theta1, theta2, bias, something):
+    for row in range(1,something.NUMBER_OF_ROWS):
+        for col in range(1,something.NUMBER_OF_COLS):
+            if (row, col) in something.terminal_states:
+                continue
+
+            something.Reward[row, col] = single_layer_perceptron(row, theta1, col, theta2, bias)
 
 
 if __name__ == '__main__':
@@ -116,6 +173,21 @@ if __name__ == '__main__':
     something.terminal_states.append((10,10))
     run_trials(something)
     pretty_print(something.Reward)
+
+    # ==============================================================================================
+    # initialise the learning rate constant
+
+    theta1 , theta2, bias = get_learned_parameters(something)
+    # 2. 10 × 10 world with a single +1 terminal state at (10,10). calculating values using least
+    #  square linear approximation
+    print("a. 10 × 10 world with a single +1 terminal state at (10,10).")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.terminal_states.append((10, 10))
+    caculate_reward_using_learned_parameter(theta1,theta2,bias,something)
+    pretty_print(something.Reward)
+
 
     #b. As in (a), but add a −1 terminal state at (10,1).
     print("b. As in (a), but add a −1 terminal state at (10,1).")
@@ -160,7 +232,16 @@ if __name__ == '__main__':
     something = CalculateUtility()
     # set rewards states
     something.Reward[10, 10] = 1
+    something.Reward[5, 5] = 1
     something.terminal_states.append((10, 10))
     run_trials(something)
     pretty_print(something.Reward)
+
+
+
+
+
+
+
+    
 
