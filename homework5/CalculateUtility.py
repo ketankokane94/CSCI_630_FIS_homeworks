@@ -10,7 +10,7 @@ of each grid instead of actually calculating
 """
 
 import numpy
-
+import random
 
 class CalculateUtility:
     __slots__ = 'NUMBER_OF_ROWS','NUMBER_OF_COLS','exploring','world','Reward','alpha', \
@@ -59,7 +59,8 @@ class CalculateUtility:
         :return: discounted reward
         """
         if (x,y) in self.exploring:
-            return self.Reward[x,y]
+            #return self.Reward[x,y]
+            return -0.004
         if self.Reward[x,y] != 0:
             return self.Reward[x, y]
         self.exploring.append((x,y))
@@ -81,17 +82,85 @@ def pretty_print(array):
         for col in range(1,11):
             print(str(round(array[row,col],3)).ljust(5),end='\t')
         print()
+    print()
+    print()
+
+def run_trials(something):
+    for row in range(1,something.NUMBER_OF_ROWS):
+        for col in range(1,something.NUMBER_OF_COLS):
+            if (row, col) in something.terminal_states:
+                continue
+            something.exploring = []
+            something.Reward[row, col] = something.get_reward(row, col)
+
+
+def set_obstacles_in_random_places(something):
+    obstacles_to_add = 10
+    while obstacles_to_add > 0:
+        x = random.randint(1,10)
+        y = random.randint(1,10)
+        if (x,y) in something.terminal_states:
+            continue
+        something.terminal_states.append((x,y))
+        obstacles_to_add -= 1
+
+
 
 
 if __name__ == '__main__':
-    # A
+    # a. 10 × 10 world with a single +1 terminal state at (10,10).
+    print("a. 10 × 10 world with a single +1 terminal state at (10,10).")
     something = CalculateUtility()
     # set rewards states
     something.Reward[10,10] = 1
     something.terminal_states.append((10,10))
-    for row in range(1,something.NUMBER_OF_ROWS):
-        for col in range(1,something.NUMBER_OF_COLS):
-            something.exploring = []
-            something.Reward[row, col] = something.get_reward(row, col)
+    run_trials(something)
+    pretty_print(something.Reward)
+
+    #b. As in (a), but add a −1 terminal state at (10,1).
+    print("b. As in (a), but add a −1 terminal state at (10,1).")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.Reward[10, 1] = -1
+    something.terminal_states.append((10, 10))
+    something.terminal_states.append((10, 1))
+    run_trials(something)
+    pretty_print(something.Reward)
+
+    # c. As in (b), but add obstacles in 10 randomly selected squares
+    print("c. As in (b), but add obstacles in 10 randomly selected squares")
+    print("Value showing 0 is the obstacles")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.Reward[10, 1] = -1
+    something.terminal_states.append((10, 10))
+    something.terminal_states.append((10, 1))
+    set_obstacles_in_random_places(something)
+    run_trials(something)
+    pretty_print(something.Reward)
+
+    # d.As in (b), but place a wall stretching from (5,2) to (5,9).
+    print("d.As in (b), but place a wall stretching from (5,2) to (5,9).")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.Reward[10, 1] = -1
+    something.terminal_states.append((10, 10))
+    something.terminal_states.append((10, 1))
+    for _ in range(2,10):
+        something.terminal_states.append((5,_))
+    run_trials(something)
+    pretty_print(something.Reward)
+
+    #e. As in (a), but with the terminal state at (5,5).
+
+    print("e. As in (a), but with the terminal state at (5,5).")
+    something = CalculateUtility()
+    # set rewards states
+    something.Reward[10, 10] = 1
+    something.terminal_states.append((10, 10))
+    run_trials(something)
     pretty_print(something.Reward)
 
